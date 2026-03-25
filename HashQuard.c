@@ -1,0 +1,109 @@
+#include "HashQuard.h"
+
+int
+NextPrime(int num)
+{
+    /* suppose num is a prime */
+    return num;
+}
+
+enum KindOfEntry {Legitimate, Empty, Deleted};
+
+struct HashEntry 
+{
+    ElementType      Element;
+    enum KindOfEntry Info;
+};
+
+typedef struct HashEntry Cell;
+
+/* Cell *TheCells will be an array of */
+/* HashEntry cells, allocated later */
+struct HashTbl
+{
+    Cell* TheCells;
+    int TableSize;
+};
+
+HashTable
+InitializeTable(int TableSize)
+{
+    HashTable H;
+    int i;
+
+    H = malloc(sizeof(struct HashTbl));
+    /* todo: if H is NULL*/
+
+    H->TableSize = NextPrime(TableSize);
+    H->TheCells = malloc(sizeof(Cell) * H->TableSize);
+    /* todo: if H->TheCells is NULL */
+
+    MakeEmpty(H);
+
+    return H;
+}
+
+/* If quadratic probing is used, */
+/* and the table size is prime, */
+/* then a new element can always be inserted */
+/* when the table is at least half empty */
+Position 
+Find(ElementType Key, HashTable H)
+{
+    Position CurrentPos;
+    int CollisionNum;
+
+    CollisionNum = 0;
+    CurrentPos = Hash(Key, H->TableSize);
+    while (H->TheCells[CurrentPos].Info != Empty &&
+           H->TheCells[CurrentPos].Element != Key)
+           /* Probably need strcmp!! */
+    {
+        CurrentPos += 2 * ++CollisionNum - 1;
+        if (CurrentPos >= H->TableSize)
+            CurrentPos -= H->TableSize;
+    }
+    return CurrentPos;
+}
+
+void
+Insert(ElementType Key, HashTable H)
+{
+    Position Pos;
+
+    Pos = Find(Key, H);
+    if (H->TheCells[Pos].Info != Legitimate)
+    {
+        /* OK to insert here */
+        H->TheCells[Pos].Info = Legitimate;
+        H->TheCells[Pos].Element = Key;
+        /* Probably need strcpy */
+    }
+}
+
+ElementType
+Retrieve(Position P, HashTable H)
+{
+    return H->TheCells[P].Element;
+}
+
+void
+Delete(ElementType Key, HashTable H)
+{
+    Position Pos;
+
+    Pos = Find(Key, H);
+    if (H->TheCells[Pos].Info == Legitimate)
+        H->TheCells[Pos].Info = Deleted;
+}
+
+/* Reset all hash table cells to Empty, */
+/* clearning all elements and tombstones */
+void
+MakeEmpty(HashTable H)
+{
+    int i;
+    
+    for (i = 0; i < H->TableSize; i++)
+        H->TheCells[i].Info = Empty;
+}

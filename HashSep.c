@@ -9,7 +9,7 @@ FatalError(const char* message)
 static int
 NextPrime(int num)
 {
-    //todo: find a minimum prime 
+    //todo: find next prime 
     return num;
 }
 
@@ -143,6 +143,19 @@ DestroyTable(HashTable H)
     Position P;
     List L;
 
+    MakeEmpty(H);
+
+    free(H->TheLists);/* 释放指针数组 */
+    free(H);
+}
+
+void
+MakeEmpty(HashTable H)
+{
+    List L;
+    Position P;
+    int i;
+
     for (i = 0; i < H->TableSize; i++)
     {
         L = H->TheLists[i];
@@ -154,11 +167,8 @@ DestroyTable(HashTable H)
             P = P->Next;
             free(Tmp);
         }
-        free(L);/* 释放表头 */
+        
+        L->Next = NULL;
     }
 
-    
-    free(L);/* 释放指针数组 */
-
-    free(H);
 }
