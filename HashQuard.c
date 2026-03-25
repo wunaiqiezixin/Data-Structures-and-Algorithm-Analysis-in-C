@@ -107,3 +107,25 @@ MakeEmpty(HashTable H)
     for (i = 0; i < H->TableSize; i++)
         H->TheCells[i].Info = Empty;
 }
+
+HashTable 
+Rehash(HashTable H)
+{
+    int i, OldSize;
+    Cell *OldCells;
+
+    OldCells = H->TheCells;
+    OldSize = H->TableSize;
+
+    /* Get a new, empty table */
+    H = InitializeTable(OldSize * 2);
+
+    /* Scan through old table, reinserting into new */
+    for (i = 0; i < OldSize; i++)
+        if (OldCells[i].Info == Legitimate)
+            Insert(OldCells[i].Element, H);
+    
+    free(OldCells);
+
+    return H;
+}

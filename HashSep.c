@@ -172,3 +172,9 @@ MakeEmpty(HashTable H)
     }
 
 }
+
+ElementType
+Retrieve(Position P)
+{
+    return P->Element;
+}
