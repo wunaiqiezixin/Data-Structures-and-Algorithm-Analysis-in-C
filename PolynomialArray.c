@@ -1,13 +1,13 @@
 #include<stdio.h>
 #include<stdlib.h>
-#define MaxDegree (100)
+#define MaxDegree (2001)
 void 
 Error(const char* message)
 {
     perror(message);
     exit(EXIT_FAILURE);
 }
-typedef struct
+typedef struct Poly
 {
     int CoeffArray[MaxDegree + 1];
     int HighPower;
@@ -58,4 +58,3 @@ MultPolynomial(const Polynomial Poly1, const Polynomial Poly2,
                 Poly1->CoeffArray[i] * 
                 Poly2->CoeffArray[j];
 }
-
